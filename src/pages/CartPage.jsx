@@ -6,6 +6,7 @@ import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 
 let counter = 0;
 const Cart = () => {
@@ -142,8 +143,6 @@ const Cart = () => {
                       <tr key={item.id}>
                         <td className={styles.centerContent}>
                           <div className={styles.trashAndImage}>
-                            {" "}
-                            {/* Container */}
                             <Button
                               variant="light"
                               className={styles.deleteButton}
@@ -151,17 +150,26 @@ const Cart = () => {
                                 handleCartChange(item, false, true)
                               }
                             >
-                              <RxCross2 color="black" size={24} />{" "}
+                              <RxCross2 color="black" size={24} />
                             </Button>
-                            <Image
-                              src={item.images[0]}
-                              alt={item.name}
-                              className={styles.cartImage}
-                              fluid
-                            />
+                            <Link to={`/products/${item.id}`}>
+                              <Image
+                                src={item.images[0]}
+                                alt={item.name}
+                                className={styles.cartImage}
+                                fluid
+                              />
+                            </Link>
                           </div>
                         </td>
-                        <td className={styles.centerContent}>{item.name}</td>
+                        <td className={styles.centerContent}>
+                          <Link
+                            to={`/products/${item.id}`}
+                            className={styles.productLink}
+                          >
+                            {item.name}
+                          </Link>
+                        </td>
                         <td className={styles.centerContent}>${item.price}</td>
                         <td className={styles.centerContent}>
                           <div className={styles.quantityControls}>
@@ -198,19 +206,6 @@ const Cart = () => {
               </div>
             </Col>
           </Row>
-          {/* <Row>
-            <Col md={12}>
-              <Card>
-                <Card.Body>
-                  <h2>Cart Summary</h2>
-                  <div className="d-flex justify-content-between">
-                    <h4>Total Price:</h4>
-                    <h3>${calculateTotalPrice()}</h3>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row> */}
         </>
       )}
       <ToastContainer
