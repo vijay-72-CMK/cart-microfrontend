@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Card, Image } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  Image,
+  Table,
+} from "react-bootstrap";
 import axios from "axios";
+import styles from "./CartPage.module.css";
 
 let counter = 0;
 const Cart = () => {
@@ -105,74 +114,91 @@ const Cart = () => {
   }, []);
   console.log("Hello I am cart page, getting rendered I guess", ++counter);
   return (
-    <Container>
+    <Container className={styles.pageContent}>
       {isLoading ? (
         <p>Loading Cart Items...</p>
       ) : (
-        <Row>
-          <Col md={8}>
-            {cartItems.length === 0 ? (
-              <h1 className="no-items product">No Items in Cart</h1>
-            ) : (
-              cartItems.map((item) => (
-                <Card key={item.id} className="mb-3">
-                  <Row className="g-0">
-                    <Col sm={4} md={3}>
-                      <Image
-                        src={item.images[0]}
-                        alt={item.name}
-                        className="cart-item-image"
-                        fluid
-                      />
-                    </Col>
-                    <Col sm={8} md={9}>
-                      <Card.Body>
-                        <Card.Title>{item.name}</Card.Title>
-                        <p className="cart-item-price">${item.price}</p>
-                        <div className="cart-item-controls">
-                          <Button
-                            variant="outline-secondary"
-                            onClick={() => handleCartChange(item, false)}
-                            disabled={item.quantity <= 1}
-                          >
-                            -
-                          </Button>
-                          <span className="cart-item-quantity">
-                            {item.quantity}
-                          </span>
-                          <Button
-                            variant="outline-secondary"
-                            onClick={() => handleCartChange(item)}
-                          >
-                            +
-                          </Button>
-                          <Button
-                            variant="danger"
-                            className="ms-2"
-                            onClick={() => handleCartChange(item, false, true)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </Card.Body>
-                    </Col>
-                  </Row>
-                </Card>
-              ))
-            )}
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Body>
-                <h2>Cart Summary</h2>
-                <div className="d-flex justify-content-between">
-                  <h4>Total Price:</h4>
-                  <h3>${calculateTotalPrice()}</h3>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+        <>
+          <Row>
+            <Col md={12}>
+              {cartItems.length === 0 ? (
+                <h1 className="no-items product">No Items in Cart</h1>
+              ) : (
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Product Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cartItems.map((item) => (
+                      <tr key={item.id}>
+                        <td>
+                          <Image
+                            src={item.images[0]}
+                            alt={item.name}
+                            className={styles.cartImage}
+                            fluid
+                            thumbnail
+                          />
+                        </td>
+                        <td>{item.name}</td>
+                        <td>${item.price}</td>
+                        <td>
+                          <div className={styles.cartItemControls}>
+                            <Button
+                              variant="outline-secondary"
+                              onClick={() => handleCartChange(item, false)}
+                              disabled={item.quantity <= 1}
+                            >
+                              -
+                            </Button>
+                            <span className="cart-item-quantity">
+                              {item.quantity}
+                            </span>
+                            <Button
+                              variant="outline-secondary"
+                              onClick={() => handleCartChange(item)}
+                            >
+                              +
+                            </Button>
+                            <Button
+                              variant="danger"
+                              className="ms-2"
+                              onClick={() =>
+                                handleCartChange(item, false, true)
+                              }
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </td>
+                        <td>${item.price * item.quantity}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              <Card>
+                <Card.Body>
+                  <h2>Cart Summary</h2>
+                  <div className="d-flex justify-content-between">
+                    <h4>Total Price:</h4>
+                    <h3>${calculateTotalPrice()}</h3>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </>
       )}
     </Container>
   );
