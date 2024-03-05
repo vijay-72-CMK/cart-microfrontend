@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  Image,
-  Table,
-} from "react-bootstrap";
+import { Container, Row, Col, Button, Image, Table } from "react-bootstrap";
 import axios from "axios";
 import styles from "./CartPage.module.css";
-import { FaTrashAlt, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
+import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 let counter = 0;
 const Cart = () => {
@@ -62,10 +57,16 @@ const Cart = () => {
           detail: { productId: item.id, quantity: quantityChange },
         })
       );
-
       console.log("Event dispatched");
+      const operationType = isDelete
+        ? "deleted"
+        : isIncrement
+        ? "incremented"
+        : "decremented";
+      toast.success(`Item ${operationType} successfully!`);
     } catch (error) {
       console.error("Error updating quantity:", error);
+      toast.error("Error updating cart");
     }
   };
 
@@ -122,51 +123,55 @@ const Cart = () => {
         <>
           <Row>
             <Col md={12}>
+              <h1 className={styles.cartTitle}>Your Shopping Cart</h1>
               {cartItems.length === 0 ? (
                 <h1 className="no-items product">No Items in Cart</h1>
               ) : (
                 <Table className={styles.cartTable}>
                   <thead>
                     <tr>
-                      <th></th> {/* Empty for trash icon */}
-                      <th></th> {/* Empty for image */}
-                      <th>Product Name</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Subtotal</th>
+                      <th className={styles.centerContent}></th>
+                      <th className={styles.centerContent}>Product Name</th>
+                      <th className={styles.centerContent}>Price</th>
+                      <th className={styles.centerContent}>Quantity</th>
+                      <th className={styles.centerContent}>Subtotal</th>
                     </tr>
                   </thead>
                   <tbody>
                     {cartItems.map((item) => (
                       <tr key={item.id}>
-                        <td>
-                          <Button
-                            variant="light"
-                            className={styles.deleteButton}
-                            onClick={() => handleCartChange(item, false, true)}
-                          >
-                            <FaTrashAlt color="gray" size={20} />
-                          </Button>
+                        <td className={styles.centerContent}>
+                          <div className={styles.trashAndImage}>
+                            {" "}
+                            {/* Container */}
+                            <Button
+                              variant="light"
+                              className={styles.deleteButton}
+                              onClick={() =>
+                                handleCartChange(item, false, true)
+                              }
+                            >
+                              <RxCross2 color="black" size={24} />{" "}
+                            </Button>
+                            <Image
+                              src={item.images[0]}
+                              alt={item.name}
+                              className={styles.cartImage}
+                              fluid
+                            />
+                          </div>
                         </td>
-                        <td>
-                          <Image
-                            src={item.images[0]}
-                            alt={item.name}
-                            className={styles.cartImage}
-                            fluid
-                          />
-                        </td>
-                        <td>{item.name}</td>
-                        <td>${item.price}</td>
-                        <td>
-                          <div className={styles.cartItemControls}>
+                        <td className={styles.centerContent}>{item.name}</td>
+                        <td className={styles.centerContent}>${item.price}</td>
+                        <td className={styles.centerContent}>
+                          <div className={styles.quantityControls}>
                             <Button
                               variant="outline-secondary"
                               className={styles.quantityButton}
                               onClick={() => handleCartChange(item, false)}
                               disabled={item.quantity <= 1}
                             >
-                              <FaMinusCircle />
+                              <FaMinusCircle size={20} />
                             </Button>
                             <span className="cart-item-quantity">
                               {item.quantity}
@@ -176,19 +181,24 @@ const Cart = () => {
                               className={styles.quantityButton}
                               onClick={() => handleCartChange(item)}
                             >
-                              <FaPlusCircle />
+                              <FaPlusCircle size={20} />
                             </Button>
                           </div>
                         </td>
-                        <td>${item.price * item.quantity}</td>
+                        <td className={styles.centerContent}>
+                          ${item.price * item.quantity}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
               )}
+              <div className={styles.totalPriceDisplay}>
+                Total: ${calculateTotalPrice()}
+              </div>
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <Col md={12}>
               <Card>
                 <Card.Body>
@@ -200,9 +210,13 @@ const Cart = () => {
                 </Card.Body>
               </Card>
             </Col>
-          </Row>
+          </Row> */}
         </>
       )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={2000} // Timeout
+      />
     </Container>
   );
 };

@@ -4,7 +4,6 @@
   margin-top: 50px;
 }
 
-/* Cart Styling */
 .cartTable {
   width: 100%;
 }
@@ -28,29 +27,57 @@
 .deleteButton {
   background-color: transparent;
   border: none;
+  padding: 8px;
+  margin-right: 10px;
 }
 
 .deleteButton:hover {
-  color: #dc3545; /* Example hover color */
+  background-color: #6d0d16 !important;
+  border-radius: 50%;
 }
 
 .trashAndImage {
-  display: flex; /* For placing items side-by-side */
+  display: flex;
   align-items: center;
 }
 
 .quantityControls {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centers quantity */
+  justify-content: center;
 }
 
 .quantityButton {
   border: none;
   background-color: transparent;
-  padding: 0 10px; /* Adjust spacing */
+  padding: 0 10px;
 }
 
 .quantityButton:hover {
-  background-color: #f0f0f0; /* Example hover color */
+  background-color: #f0f0f0;
+}
+
+.centerContent {
+  text-align: center;
+}
+.cartTable td {
+  vertical-align: middle;
+}
+
+.trashAndImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.totalPriceDisplay {
+  font-weight: bold;
+  font-size: 24px;
+  text-align: right;
+  margin-top: 15px;
+}
+
+.cartTitle {
+  text-align: center;
+  margin-bottom: 20px;
 }
