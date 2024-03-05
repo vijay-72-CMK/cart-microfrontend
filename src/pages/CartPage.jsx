@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Card, Image } from "react-bootstrap";
 import axios from "axios";
 
+let counter = 0;
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -12,85 +13,97 @@ const Cart = () => {
       0
     );
   };
-  const handleIncrement = async (item) => {
+
+  const handleCartChange = async (
+    item,
+    isIncrement = true,
+    isDelete = false
+  ) => {
     try {
+      const quantityChange = isIncrement ? 1 : isDelete ? -item.quantity : -1;
+
       const response = await axios.post(
         "http://localhost:8082/api/cart/modify-cart",
-
         {
           productId: item.id,
-
-          quantity: 1,
+          quantity: quantityChange,
         },
-
         { withCredentials: true }
       );
-      console.log("call made" + response);
 
-      // Update state directly
-      setCartItems(
-        cartItems.map((cartItem) => {
-          if (cartItem.id === item.id) {
-            return { ...cartItem, quantity: cartItem.quantity + 1 };
-          }
-          return cartItem; // No change for other items
-        })
-      );
+      setCartItems((cartItems) => {
+        if (isDelete) {
+          return cartItems.filter((cartItem) => cartItem.id !== item.id);
+        } else {
+          return cartItems.map((cartItem) => {
+            if (cartItem.id === item.id) {
+              return {
+                ...cartItem,
+                quantity: cartItem.quantity + quantityChange,
+              };
+            }
+            return cartItem;
+          });
+        }
+      });
+
       window.dispatchEvent(
-        new CustomEvent("cart-item-added", {
-          detail: { productId: item.id, quantity: 1 },
+        new CustomEvent("cart-change", {
+          detail: { productId: item.id, quantity: quantityChange },
         })
       );
-      console.log("Event dispatched: cart-item-added");
+
+      console.log("Event dispatched");
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
+  const fetchData = async () => {
+    setIsLoading(true);
 
-      try {
-        const cartResponse = await axios.get(
-          "http://localhost:8082/api/cart/view-cart",
-          { withCredentials: true }
-        );
+    try {
+      const cartResponse = await axios.get(
+        "http://localhost:8082/api/cart/view-cart",
+        { withCredentials: true }
+      );
 
-        if (cartResponse.data.cartItems.length === 0) {
-          setIsLoading(false);
-          return;
-        }
-        console.log(cartResponse.data);
+      if (cartResponse.data.cartItems.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+      console.log(cartResponse.data);
 
-        const productPromises = cartResponse.data.cartItems.map((item) =>
+      const productResults = await Promise.all(
+        cartResponse.data.cartItems.map((item) =>
           axios.get(`http://localhost:8081/api/products/${item.productId}`, {
             withCredentials: true,
           })
-        );
+        )
+      );
 
-        const productResults = await Promise.all(productPromises);
+      const enrichedCartItems = [];
 
-        const enrichedCartItems = []; // Changed to an array
-
-        cartResponse.data.cartItems.forEach((cartItem, index) => {
-          enrichedCartItems.push({
-            ...cartItem,
-            ...productResults[index].data,
-          });
-
-          setCartItems(enrichedCartItems); // Update state after each item
+      cartResponse.data.cartItems.forEach((cartItem, index) => {
+        enrichedCartItems.push({
+          ...cartItem,
+          ...productResults[index].data,
         });
-        console.log(enrichedCartItems);
-      } catch (error) {
-        console.error("Error fetching cart data in CART MF", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      });
+      setCartItems(enrichedCartItems);
 
+      console.log(enrichedCartItems);
+    } catch (error) {
+      console.error("Error fetching cart data in CART MF", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
+  console.log("Hello I am cart page, getting rendered I guess", ++counter);
   return (
     <Container>
       {isLoading ? (
@@ -119,7 +132,7 @@ const Cart = () => {
                         <div className="cart-item-controls">
                           <Button
                             variant="outline-secondary"
-                            onClick={() => handleDecrement(item)}
+                            onClick={() => handleCartChange(item, false)}
                             disabled={item.quantity <= 1}
                           >
                             -
@@ -129,14 +142,14 @@ const Cart = () => {
                           </span>
                           <Button
                             variant="outline-secondary"
-                            onClick={() => handleIncrement(item)}
+                            onClick={() => handleCartChange(item)}
                           >
                             +
                           </Button>
                           <Button
                             variant="danger"
                             className="ms-2"
-                            onClick={() => handleDelete(item)}
+                            onClick={() => handleCartChange(item, false, true)}
                           >
                             Delete
                           </Button>
@@ -150,8 +163,6 @@ const Cart = () => {
           </Col>
           <Col md={4}>
             <Card>
-              {" "}
-              {/* Card for the summary */}
               <Card.Body>
                 <h2>Cart Summary</h2>
                 <div className="d-flex justify-content-between">
