@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import styles from "./CartPage.module.css";
+import { FaTrashAlt, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 
 let counter = 0;
 const Cart = () => {
@@ -124,10 +125,11 @@ const Cart = () => {
               {cartItems.length === 0 ? (
                 <h1 className="no-items product">No Items in Cart</h1>
               ) : (
-                <Table striped bordered hover>
+                <Table className={styles.cartTable}>
                   <thead>
                     <tr>
-                      <th>Image</th>
+                      <th></th> {/* Empty for trash icon */}
+                      <th></th> {/* Empty for image */}
                       <th>Product Name</th>
                       <th>Price</th>
                       <th>Quantity</th>
@@ -138,12 +140,20 @@ const Cart = () => {
                     {cartItems.map((item) => (
                       <tr key={item.id}>
                         <td>
+                          <Button
+                            variant="light"
+                            className={styles.deleteButton}
+                            onClick={() => handleCartChange(item, false, true)}
+                          >
+                            <FaTrashAlt color="gray" size={20} />
+                          </Button>
+                        </td>
+                        <td>
                           <Image
                             src={item.images[0]}
                             alt={item.name}
                             className={styles.cartImage}
                             fluid
-                            thumbnail
                           />
                         </td>
                         <td>{item.name}</td>
@@ -152,28 +162,21 @@ const Cart = () => {
                           <div className={styles.cartItemControls}>
                             <Button
                               variant="outline-secondary"
+                              className={styles.quantityButton}
                               onClick={() => handleCartChange(item, false)}
                               disabled={item.quantity <= 1}
                             >
-                              -
+                              <FaMinusCircle />
                             </Button>
                             <span className="cart-item-quantity">
                               {item.quantity}
                             </span>
                             <Button
                               variant="outline-secondary"
+                              className={styles.quantityButton}
                               onClick={() => handleCartChange(item)}
                             >
-                              +
-                            </Button>
-                            <Button
-                              variant="danger"
-                              className="ms-2"
-                              onClick={() =>
-                                handleCartChange(item, false, true)
-                              }
-                            >
-                              Delete
+                              <FaPlusCircle />
                             </Button>
                           </div>
                         </td>
