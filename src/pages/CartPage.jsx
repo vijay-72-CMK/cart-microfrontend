@@ -123,7 +123,7 @@ const Cart = () => {
       ) : (
         <>
           <Row>
-            <Col md={12}>
+            <Col md={8}>
               <h1 className={styles.cartTitle}>Your Shopping Cart</h1>
               {cartItems.length === 0 ? (
                 <h1 className="no-items product">No Items in Cart</h1>
@@ -143,15 +143,6 @@ const Cart = () => {
                       <tr key={item.id}>
                         <td className={styles.centerContent}>
                           <div className={styles.trashAndImage}>
-                            <Button
-                              variant="light"
-                              className={styles.deleteButton}
-                              onClick={() =>
-                                handleCartChange(item, false, true)
-                              }
-                            >
-                              <RxCross2 color="black" size={24} />
-                            </Button>
                             <Link to={`/products/${item.id}`}>
                               <Image
                                 src={item.images[0]}
