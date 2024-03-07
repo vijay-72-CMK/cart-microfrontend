@@ -7,6 +7,7 @@ import { RxCross2 } from "react-icons/rx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
+import { BsCartX } from "react-icons/bs";
 
 let counter = 0;
 const Cart = () => {
@@ -19,6 +20,36 @@ const Cart = () => {
       0
     );
   };
+
+  const handleCheckout = async () => {
+    try {
+      const response = await axios.delete(
+        "http://localhost:8082/api/cart/delete-cart",
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        toast.success("Order placed successfully!");
+        const cartCount = localStorage.getItem("cartCount") || 0;
+
+        window.dispatchEvent(
+          new CustomEvent("cart-change", {
+            detail: { productId: "full clear", quantity: -cartCount },
+          })
+        );
+
+        setCartItems([]);
+      } else {
+        toast.error("Error placing order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error checking out:", error);
+      toast.error("Error placing order. Please try again.");
+    }
+  };
+
+  const SHIPPING_FEE = 10;
+  const TAX_RATE = 0.07;
 
   const handleCartChange = async (
     item,
@@ -38,7 +69,7 @@ const Cart = () => {
       );
 
       setCartItems((cartItems) => {
-        if (isDelete) {
+        if (isDelete || (item.quantity == 1 && !isIncrement)) {
           return cartItems.filter((cartItem) => cartItem.id !== item.id);
         } else {
           return cartItems.map((cartItem) => {
@@ -122,11 +153,20 @@ const Cart = () => {
         <p>Loading Cart Items...</p>
       ) : (
         <>
-          <Row>
+          {cartItems.length > 0 && (
+            <Row>
+              <Col md={12}>
+                <h1 className={styles.cartTitle}>Shopping Cart</h1>
+              </Col>
+            </Row>
+          )}
+          <Row className={styles.contentRow}>
             <Col md={8}>
-              <h1 className={styles.cartTitle}>Your Shopping Cart</h1>
               {cartItems.length === 0 ? (
-                <h1 className="no-items product">No Items in Cart</h1>
+                <div className={styles.emptyCartContainer}>
+                  <BsCartX size={100} color="#6d0d16" />{" "}
+                  <h1 className="no-items product">No Items in Cart</h1>
+                </div>
               ) : (
                 <Table className={styles.cartTable}>
                   <thead>
@@ -168,7 +208,6 @@ const Cart = () => {
                               variant="outline-secondary"
                               className={styles.quantityButton}
                               onClick={() => handleCartChange(item, false)}
-                              disabled={item.quantity <= 1}
                             >
                               <FaMinusCircle size={20} />
                             </Button>
@@ -186,23 +225,66 @@ const Cart = () => {
                         </td>
                         <td className={styles.centerContent}>
                           ${item.price * item.quantity}
+                          <Button
+                            variant="none"
+                            className={styles.deleteButton}
+                            onClick={() => handleCartChange(item, false, true)}
+                          >
+                            <RxCross2 size={20} />
+                          </Button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
               )}
-              <div className={styles.totalPriceDisplay}>
-                Total: ${calculateTotalPrice()}
-              </div>
             </Col>
+            {cartItems.length > 0 && (
+              <Col md={4}>
+                <div className={styles.summaryCard}>
+                  <h3>Cart Summary</h3>
+                  <div className={styles.summaryItem}>
+                    <span>Subtotal</span>
+                    <span>${calculateTotalPrice().toFixed(2)}</span>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span>Shipping</span>
+                    <span>${SHIPPING_FEE.toFixed(2)}</span>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span>Tax</span>
+                    <span>
+                      ${(calculateTotalPrice() * TAX_RATE).toFixed(2)}
+                    </span>
+                  </div>
+                  <hr /> {/* Simple divider */}
+                  <div className={styles.summaryTotal}>
+                    <span>Total</span>
+                    <span>
+                      $
+                      {(
+                        calculateTotalPrice() +
+                        SHIPPING_FEE +
+                        calculateTotalPrice() * TAX_RATE
+                      ).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.checkoutButtonContainer}>
+                  <Button
+                    variant="primary"
+                    className={styles.checkoutButton}
+                    onClick={handleCheckout}
+                  >
+                    Checkout
+                  </Button>
+                </div>
+              </Col>
+            )}
           </Row>
         </>
       )}
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000} // Timeout
-      />
+      <ToastContainer position="bottom-right" autoClose={2000} />
     </Container>
   );
 };
