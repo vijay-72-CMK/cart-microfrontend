@@ -45,6 +45,7 @@ const Cart = () => {
     } catch (error) {
       console.error("Error checking out:", error);
       toast.error("Error placing order. Please try again.");
+      naviagte("/error", { replace: true });
     }
   };
 
@@ -99,6 +100,7 @@ const Cart = () => {
     } catch (error) {
       console.error("Error updating quantity:", error);
       toast.error("Error updating cart");
+      naviagte("/error", { replace: true });
     }
   };
 
@@ -138,6 +140,7 @@ const Cart = () => {
       console.log(enrichedCartItems);
     } catch (error) {
       console.error("Error fetching cart data in CART MF", error);
+      naviagte("/error", { replace: true });
     } finally {
       setIsLoading(false);
     }

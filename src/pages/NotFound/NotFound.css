@@ -1,0 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+.redirect-link {
+  color: #555; /* Slightly lighter gray */
+  text-decoration: underline;
+  cursor: pointer;
+}
