@@ -8,9 +8,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { BsCartX } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 let counter = 0;
 const Cart = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,14 +40,16 @@ const Cart = () => {
           })
         );
 
-        setCartItems([]);
+        navigate("/cart/checkout-success", {
+          state: { cartItems, totalPrice: calculateTotalPrice() },
+        });
       } else {
         toast.error("Error placing order. Please try again.");
       }
     } catch (error) {
       console.error("Error checking out:", error);
       toast.error("Error placing order. Please try again.");
-      naviagte("/error", { replace: true });
+      navigate("/error", { replace: true });
     }
   };
 
@@ -100,7 +104,7 @@ const Cart = () => {
     } catch (error) {
       console.error("Error updating quantity:", error);
       toast.error("Error updating cart");
-      naviagte("/error", { replace: true });
+      navigate("/error", { replace: true });
     }
   };
 
@@ -140,7 +144,7 @@ const Cart = () => {
       console.log(enrichedCartItems);
     } catch (error) {
       console.error("Error fetching cart data in CART MF", error);
-      naviagte("/error", { replace: true });
+      navigate("/error", { replace: true });
     } finally {
       setIsLoading(false);
     }
