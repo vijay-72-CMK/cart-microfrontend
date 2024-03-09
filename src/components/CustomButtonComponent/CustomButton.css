@@ -1,0 +1,19 @@
+.btn-flat {
+  background-color: var(--primary);
+  color: var(--accent);
+  transition: all 100ms ease-in;
+  width: max-content !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  height: max-content !important;
+}
+.btn-flat:hover {
+  background-color: var(--primary) !important;
+  color: var(--accent);
+  transform: scale(1.1);
+}
+.btn-xxl {
+  padding: 1rem 1.5rem;
+  font-size: 1.5rem;
+}

@@ -9,7 +9,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { BsCartX } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-
+import CustomButton from "../../components/CustomButtonComponent/CustomButton";
+import DeleteIcon from "../../../public/delete.svg";
+import CheckoutIcon from "../../../public/checkout.svg";
 let counter = 0;
 const Cart = () => {
   const navigate = useNavigate();
@@ -163,7 +165,7 @@ const Cart = () => {
           {cartItems.length > 0 && (
             <Row>
               <Col md={12}>
-                <h1 className={styles.cartTitle}>Shopping Cart</h1>
+                <h1 className="text-center mb-3">Your Cart</h1>
               </Col>
             </Row>
           )}
@@ -175,75 +177,64 @@ const Cart = () => {
                   <h1 className="no-items product">No Items in Cart</h1>
                 </div>
               ) : (
-                <Table className={styles.cartTable}>
-                  <thead>
-                    <tr>
-                      <th className={styles.centerContent}></th>
-                      <th className={styles.centerContent}>Product Name</th>
-                      <th className={styles.centerContent}>Price</th>
-                      <th className={styles.centerContent}>Quantity</th>
-                      <th className={styles.centerContent}>Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <>
+                  <div className={styles.productGrid}>
+                    <p></p>
+                    <p className={styles.header}>Product Name</p>
+                    <p className={styles.header}>Price per unit</p>
+                    <p className={styles.header}>Quantity</p>
+                    <p className={styles.header}>Subtotal</p>
                     {cartItems.map((item) => (
-                      <tr key={item.id}>
-                        <td className={styles.centerContent}>
-                          <div className={styles.trashAndImage}>
-                            <Link to={`/products/${item.id}`}>
-                              <Image
-                                src={item.images[0]}
-                                alt={item.name}
-                                className={styles.cartImage}
-                                fluid
-                              />
-                            </Link>
-                          </div>
-                        </td>
-                        <td className={styles.centerContent}>
-                          <Link
-                            to={`/products/${item.id}`}
-                            className={styles.productLink}
-                          >
-                            {item.name}
+                      <>
+                        <div className={styles.trashAndImage}>
+                          <Link to={`/products/${item.id}`}>
+                            <Image
+                              src={item.images[0]}
+                              alt={item.name}
+                              className={styles.cartImage}
+                              fluid
+                            />
                           </Link>
-                        </td>
-                        <td className={styles.centerContent}>${item.price}</td>
-                        <td className={styles.centerContent}>
-                          <div className={styles.quantityControls}>
-                            <Button
-                              variant="outline-secondary"
-                              className={styles.quantityButton}
-                              onClick={() => handleCartChange(item, false)}
-                            >
-                              <FaMinusCircle size={20} />
-                            </Button>
-                            <span className="cart-item-quantity">
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="outline-secondary"
-                              className={styles.quantityButton}
-                              onClick={() => handleCartChange(item)}
-                            >
-                              <FaPlusCircle size={20} />
-                            </Button>
+                        </div>
+                        <Link
+                          to={`/products/${item.id}`}
+                          className={styles.productLink}
+                        >
+                          {item.name}
+                        </Link>
+                        <p className={styles.priceContainer}>${item.price}</p>
+                        <div className={styles.quantityControls}>
+                          <div
+                            className={styles.quantityButton}
+                            onClick={() => handleCartChange(item, false)}
+                          >
+                            <span>-</span>
                           </div>
-                        </td>
-                        <td className={styles.centerContent}>
-                          ${item.price * item.quantity}
+                          <span className="cart-item-quantity">
+                            {item.quantity}
+                          </span>
+                          <div
+                            variant="outline-secondary"
+                            className={styles.quantityButton}
+                            onClick={() => handleCartChange(item)}
+                          >
+                            <span>+</span>
+                          </div>
+                        </div>
+                        <div className={styles.totalValue}>
+                          <span>${item.price * item.quantity}</span>
                           <Button
                             variant="none"
                             className={styles.deleteButton}
                             onClick={() => handleCartChange(item, false, true)}
                           >
-                            <RxCross2 size={20} />
+                            <Image src={DeleteIcon} />
                           </Button>
-                        </td>
-                      </tr>
+                        </div>
+                      </>
                     ))}
-                  </tbody>
-                </Table>
+                  </div>
+                </>
               )}
             </Col>
             {cartItems.length > 0 && (
@@ -276,16 +267,13 @@ const Cart = () => {
                       ).toFixed(2)}
                     </span>
                   </div>
+                  <div className={styles.checkoutButtonContainer}>
+                    <CustomButton size="lg" onClick={handleCheckout}>
+                      Checkout
+                    </CustomButton>
+                  </div>
                 </div>
-                <div className={styles.checkoutButtonContainer}>
-                  <Button
-                    variant="primary"
-                    className={styles.checkoutButton}
-                    onClick={handleCheckout}
-                  >
-                    Checkout
-                  </Button>
-                </div>
+                <Image src={CheckoutIcon} />
               </Col>
             )}
           </Row>

@@ -3,11 +3,25 @@
   min-height: 100vh;
   margin-top: 20px;
 }
-
-.cartTable {
-  width: 100%;
-  background-color: #f5f5f5;
+.productGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 2em;
 }
+.productGrid > * {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.productGrid > .header {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+}
+/* .productGrid .cartTable {
+  width: 100%;
+  background-color: var(--secondary);
+} */
 
 .cartTable th,
 .cartTable td {
@@ -25,7 +39,7 @@
   object-fit: cover;
 }
 
-.deleteButton {
+/* .deleteButton {
   background-color: transparent;
   border: none;
   padding: 8px;
@@ -36,7 +50,7 @@
 .deleteButton:hover {
   background-color: #6d0d16 !important;
   border-radius: 50%;
-}
+} */
 
 .trashAndImage {
   display: flex;
@@ -44,19 +58,29 @@
 }
 
 .quantityControls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-
+.priceContainer {
+  margin: 0;
+}
 .quantityButton {
   border: none;
   background-color: transparent;
+  opacity: 0.7;
   padding: 0 10px;
+  transition: all 100ms ease-in;
+}
+.quantityButton > span {
+  height: max-content;
+  font-size: 2em;
+  opacity: 1;
+  transition: all 100ms ease-in;
 }
 
 .quantityButton:hover {
-  background-color: #f0f0f0;
+  background-color: var(--secondary);
+  color: var(--accent);
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .centerContent {
@@ -85,9 +109,13 @@
 }
 
 .productLink {
-  color: rgb(152, 56, 56);
-  text-decoration: underline;
+  color: var(--accent);
+  text-decoration: none;
   cursor: pointer;
+  transition: all 100ms ease-in;
+}
+.productLink:hover {
+  text-decoration: underline;
 }
 
 .cartImage:hover {
@@ -97,11 +125,14 @@
 
 .cartCard,
 .summaryCard {
-  border: 1px solid lightgray;
+  border: 1px solid var(--accent);
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 5px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+}
+.summaryCard > hr {
+  border: 1px solid var(--accent);
 }
 
 .summaryItem {
@@ -122,8 +153,25 @@
   justify-content: center;
   margin-top: 20px;
 }
-
+.checkoutButtonContainer > button {
+  width: 90% !important;
+  display: flex;
+  justify-content: center;
+}
+.totalValue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 3em;
+  gap: 1em;
+}
 .deleteButton {
+  padding: 0;
+}
+.deleteButton > img {
+  width: 24px;
+}
+/* .deleteButton {
   background-color: transparent;
   border: none;
   padding: 8px;
@@ -134,7 +182,7 @@
 .deleteButton:hover {
   background-color: #6d0d16;
   border-radius: 50%;
-}
+} */
 
 .emptyCartContainer {
   display: flex;
