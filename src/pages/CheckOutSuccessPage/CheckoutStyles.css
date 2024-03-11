@@ -1,7 +1,7 @@
 .cardBody {
   background-color: var(--secondary);
   border: 0;
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 400;
 }
 .cardTitle {
@@ -26,4 +26,19 @@
   width: max-content;
   margin-inline: auto;
   margin-bottom: 3em;
+}
+
+.emptyCart {
+  text-align: center; /* Center content horizontally */
+  margin-top: 40px; /* Add some spacing from the top */
+}
+
+.emptyCartImage {
+  display: block;
+  margin: 0 auto 20px; /* Center image, add bottom margin */
+  max-width: 200px; /* Adjust max-width as needed */
+}
+
+.emptyCartText {
+  font-size: 1.2em; /* Adjust font size as needed */
 }

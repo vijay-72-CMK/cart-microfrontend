@@ -1,13 +1,14 @@
 .btn-flat {
   background-color: var(--primary);
   color: var(--accent);
-  transition: all 100ms ease-in;
-  width: max-content !important;
+  width: max-content;
+  height: max-content;
   display: flex;
   align-items: center;
   gap: 0.5em;
-  height: max-content !important;
+  transition: all 100ms ease-in;
 }
+
 .btn-flat:hover {
   background-color: var(--primary) !important;
   color: var(--accent);
@@ -16,4 +17,15 @@
 .btn-xxl {
   padding: 1rem 1.5rem;
   font-size: 1.5rem;
+}
+.outline {
+  background-color: var(--secondary);
+  border: 1px solid var(--primary);
+  transition: all 100ms ease-in;
+  margin-bottom: 1em;
+}
+.btn-flat.outline:hover {
+  background-color: var(--secondary) !important;
+  border: 1px solid var(--primary);
+  color: var(--accent);
 }
