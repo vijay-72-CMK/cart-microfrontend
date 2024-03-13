@@ -18,6 +18,11 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  if (!storedIsLoggedIn) {
+    navigate("/login", { replace: true });
+  }
+
   const calculateTotalPrice = () => {
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -146,7 +151,9 @@ const Cart = () => {
       console.log(enrichedCartItems);
     } catch (error) {
       console.error("Error fetching cart data in CART MF", error);
-      navigate("/error", { replace: true });
+      if (!error.response || error.response.status == 500) {
+        navigate("/error", { replace: true });
+      }
     } finally {
       setIsLoading(false);
     }

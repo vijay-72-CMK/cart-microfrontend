@@ -50,7 +50,6 @@ module.exports = (_, argv) => ({
       remotes: {},
       exposes: {
         "./CartRouter": "./src/components/CartRouter.jsx",
-        "./CartContext": "./src/context/CartContext.jsx",
       },
       shared: {
         ...deps,
